@@ -9,7 +9,7 @@ namespace ArtistDatabase
         static void Main(string[] args)
         {
             Console.WriteLine("hello world!");
-            MongoCRUD db = new MongoCRUD("Artist"); 
+            MongoCRUD db = new MongoCRUD("ArtistAddressBook"); 
             Console.ReadLine();
         }
     }
@@ -26,5 +26,12 @@ namespace ArtistDatabase
             var collection = db.GetCollection<T>(table);
             collection.InsertOne(record);
         }
+    }
+
+    public class ArtistModel{
+        public string Firstname{get; set;}
+        public string Lastname{get; set;}
+        public int[] Birth{get; set;}
+        public string[] Webaddresses{get; set;}
     }
 }
