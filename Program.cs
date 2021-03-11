@@ -16,7 +16,9 @@ namespace ArtistDatabase
                 Lastname = "Isaksen",
                 Birthdate = "30/01/1998",
                 Addresses = "Julius Bloms Gade 13",
-                Resume = new FileReader(System.IO.File.ReadAllLines(@"D:\HalfdanTheVillain\ArtistDatabase\HalfdanResume.txt"))
+                Resume = new FileReader{
+                    text = System.IO.File.ReadAllLines(@"D:\HalfdanTheVillain\ArtistDatabase\HalfdanResume.txt")
+                }
             };
 
             db.InsertRecord("Artist", halfdan);
@@ -32,6 +34,7 @@ namespace ArtistDatabase
             db = client.GetDatabase(database);
         }
 
+//inserting a table in the databse with a record
         public void InsertRecord<T>(string table, T record){
             var collection = db.GetCollection<T>(table);
             collection.InsertOne(record);
@@ -53,10 +56,10 @@ namespace ArtistDatabase
     public class FileReader{
         //FileReader lets you upload a .txt file and then converts it to a string array
         //Husk at det sted .txt filen skal findes kan gøres som et console.readline med placeringen af tekstfilen på computeren
-        private string[] text;
-        public FileReader(string[] inputText){
+        public string[] text{get; set;}
+        /*public FileReader(string[] inputText){
             text = inputText;
-        }
+        }*/
         //Prints the resume in the terminal
         public void PrintResume(){
             foreach (string line in text){
