@@ -34,15 +34,15 @@ namespace ArtistDatabase
         public string Lastname{get; set;}
         public string Birthdate{get; set;}
         public string Addresses{get; set;}
-        //if im corret i can initalize the class by calling Artistmodel.resumeset later
+        //if im corret i can initalize the class by calling Artistmodel.resume = new filereader() later
         public FileReader Resume{get; set;}
     }
 
     public class FileReader{
-        //Resume is gonna be a .txt file you can upload
+        //FileReader is gonna be a .txt file you can upload
         //important that when a file is going to be loaded and passed as
         //a string and you want the .txt to print in console that the file is
-        //stored in a string array with each line as on index in the arrray
+        //stored in a string array with each line as an index in the arrray
 
         //Husk at det sted .txt filen skal findes kan gøres som et console.readline med placeringen af tekstfilen på computeren
         private string[] text;
