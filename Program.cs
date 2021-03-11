@@ -17,7 +17,7 @@ namespace ArtistDatabase
         {
         private IMongoDatabase db;
         public MongoCRUD(string database){
-            //create client for connecting to database
+             //create client for connecting to database
             var client = new MongoClient();
             db = client.GetDatabase(database);
         }
@@ -28,10 +28,32 @@ namespace ArtistDatabase
         }
     }
 
+    //creating a class for the basic information the databse needs to hold about an artist
     public class ArtistModel{
         public string Firstname{get; set;}
         public string Lastname{get; set;}
-        public int[] Birth{get; set;}
-        public string[] Webaddresses{get; set;}
+        public string Birthdate{get; set;}
+        public string Addresses{get; set;}
+        //if im corret i can initalize the class by calling Artistmodel.resumeset later
+        public FileReader Resume{get; set;}
+    }
+
+    public class FileReader{
+        //Resume is gonna be a .txt file you can upload
+        //important that when a file is going to be loaded and passed as
+        //a string and you want the .txt to print in console that the file is
+        //stored in a string array with each line as on index in the arrray
+
+        //Husk at det sted .txt filen skal findes kan gøres som et console.readline med placeringen af tekstfilen på computeren
+        private string[] text;
+        public FileReader(string[] inputText){
+            text = inputText;
+        }
+        //Prints the resume in the terminal
+        public void PrintResume(){
+            foreach (string line in text){
+                Console.WriteLine("\t" + line);
+            }
+        }
     }
 }
