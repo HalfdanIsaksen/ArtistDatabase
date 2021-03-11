@@ -9,7 +9,17 @@ namespace ArtistDatabase
         static void Main(string[] args)
         {
             Console.WriteLine("hello world!");
-            MongoCRUD db = new MongoCRUD("ArtistAddressBook"); 
+            MongoCRUD db = new MongoCRUD("ArtistAddressBook");
+
+            ArtistModel halfdan = new ArtistModel{
+                Firstname = "Halfdan",
+                Lastname = "Isaksen",
+                Birthdate = "30/01/1998",
+                Addresses = "Julius Bloms Gade 13",
+                Resume = new FileReader(System.IO.File.ReadAllLines(@"D:\HalfdanTheVillain\ArtistDatabase\HalfdanResume.txt"))
+            };
+
+            db.InsertRecord("Artist", halfdan);
             Console.ReadLine();
         }
     }
@@ -30,6 +40,8 @@ namespace ArtistDatabase
 
     //creating a class for the basic information the databse needs to hold about an artist
     public class ArtistModel{
+        /*[BsonId]
+        public ObjectId Id{get; set;}*/
         public string Firstname{get; set;}
         public string Lastname{get; set;}
         public string Birthdate{get; set;}
@@ -39,11 +51,7 @@ namespace ArtistDatabase
     }
 
     public class FileReader{
-        //FileReader is gonna be a .txt file you can upload
-        //important that when a file is going to be loaded and passed as
-        //a string and you want the .txt to print in console that the file is
-        //stored in a string array with each line as an index in the arrray
-
+        //FileReader lets you upload a .txt file and then converts it to a string array
         //Husk at det sted .txt filen skal findes kan gøres som et console.readline med placeringen af tekstfilen på computeren
         private string[] text;
         public FileReader(string[] inputText){
