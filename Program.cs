@@ -1,6 +1,7 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 
 namespace ArtistDatabase
@@ -28,10 +29,12 @@ namespace ArtistDatabase
             db.InsertRecord("Artist", halfdan);
         }
         public void Read(){
+            //collect all records from the artist table
             var recs = db.ReadRecords<ArtistModel>("Artist");
+            //foreach record in recs print the name and birthday and address if it is registeret
             foreach (var rec in recs){
                 Console.WriteLine($"{rec.Firstname}: {rec.Lastname}: {rec.Birthdate}:");
-                
+                //if the artist has a address registeret print it
                 if(rec.Addresses != null){
                     Console.WriteLine(rec.Addresses);
                 }
@@ -44,17 +47,15 @@ namespace ArtistDatabase
         {
         private IMongoDatabase db;
         public MongoCRUD(string database){
-             //create client for connecting to database
+            //create client for connecting to database
             var client = new MongoClient();
             db = client.GetDatabase(database);
         }
-
-//inserting a table in the databse with a record
+        //inserting a table in the databse with a record
         public void InsertRecord<T>(string table, T record){
             var collection = db.GetCollection<T>(table);
             collection.InsertOne(record);
         }
-
         public List<T> ReadRecords<T>(string table){
             var collection = db.GetCollection<T>(table);
             return collection.Find(new BsonDocument()).ToList();
@@ -63,8 +64,8 @@ namespace ArtistDatabase
 
     //creating a class for the basic information the databse needs to hold about an artist
     public class ArtistModel{
-        /*[BsonId]
-        public ObjectId Id{get; set;}*/
+        [BsonId]
+        public ObjectId Id{get; set;}
         public string Firstname{get; set;}
         public string Lastname{get; set;}
         public string Birthdate{get; set;}
