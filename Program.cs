@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
+using Microsoft.Bcl;
 
 namespace ArtistDatabase
 {
@@ -33,7 +34,7 @@ namespace ArtistDatabase
             var recs = db.ReadRecords<ArtistModel>("Artist");
             //foreach record in recs print the name and birthday and address if it is registeret
             foreach (var rec in recs){
-                Console.WriteLine($"{rec.Firstname}: {rec.Lastname}: {rec.Birthdate}:");
+                Console.WriteLine($"{rec.Id}: {rec.Firstname}: {rec.Lastname}: {rec.Birthdate}:");
                 //if the artist has a address registeret print it
                 if(rec.Addresses != null){
                     Console.WriteLine(rec.Addresses);
@@ -41,6 +42,45 @@ namespace ArtistDatabase
                 Console.WriteLine();
             }
             Console.ReadLine();
+        }
+        public void ReadOneRec(){
+            Console.WriteLine("First write which type you want, then table, then id of the artist you want");
+            Console.WriteLine("seperate each element with a comma and space");
+            string recToRead = Console.ReadLine();
+            string[] recInput = recToRead.Split(", ");
+            //Turn string to guid
+            Guid inputGuid = Guid.Parse(recInput[2]);
+            db.ReadOneRecord<ArtistModel>(recInput[1], inputGuid);
+        }
+        public void Operating(){
+            switch(Console.ReadLine()){
+                case "Start":
+                    Start();
+                    break;
+                case "Help":
+                    Help();
+                    break;
+                case "ReadAll":
+                    Read();
+                    break;
+                case "ReadOne":
+                    ReadOneRec();
+                    break;
+            }
+        }
+
+        public void Start(){
+
+        }
+        public void Help(){
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+        public static T GetTFromString<T>(string typeString){
+            var typeReturned = TypeDescriptor.GetConverter(typeof(T));
+            return (T)(typeReturned.ConvertFromInvariantString(typeString));
         }
     }
     public class MongoCRUD
@@ -51,7 +91,7 @@ namespace ArtistDatabase
             var client = new MongoClient();
             db = client.GetDatabase(database);
         }
-        //inserting a table in the databse with a record
+        //inserting a record in the table in the databse
         public void InsertRecord<T>(string table, T record){
             var collection = db.GetCollection<T>(table);
             collection.InsertOne(record);
@@ -60,12 +100,34 @@ namespace ArtistDatabase
             var collection = db.GetCollection<T>(table);
             return collection.Find(new BsonDocument()).ToList();
         }
+        //find on record in the table by searching for its id
+        public T ReadOneRecord<T>(string table, Guid id){
+            var collection = db.GetCollection<T>(table);
+            var filter = Builders<T>.Filter.Eq("Id", id);
+
+            return collection.Find(filter).First();
+        }
+
+        public void UpsertRecord<T>(string table, Guid id, T record){
+            var collection = db.GetCollection<T>(table);
+
+            var result = collection.ReplaceOne(
+                new BsonDocument("_id", id),
+                record,
+                new UpdateOptions{ IsUpsert = true});
+        }
+
+        public void DeleteRecord<T>(string table, Guid id){
+            var collection = db.GetCollection<T>(table);
+            var filter = Builders<T>.Filter.Eq("id", id);
+            collection.DeleteOne(filter);
+        }
     }
 
     //creating a class for the basic information the databse needs to hold about an artist
     public class ArtistModel{
         [BsonId]
-        public ObjectId Id{get; set;}
+        public Guid Id{get; set;}
         public string Firstname{get; set;}
         public string Lastname{get; set;}
         public string Birthdate{get; set;}
