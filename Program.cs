@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
-using Microsoft.Bcl;
+using System.ComponentModel;
 
 namespace ArtistDatabase
 {
@@ -44,13 +44,13 @@ namespace ArtistDatabase
             Console.ReadLine();
         }
         public void ReadOneRec(){
-            Console.WriteLine("First write which type you want, then table, then id of the artist you want");
+            Console.WriteLine("First write which table you want, then id of the artist you want");
             Console.WriteLine("seperate each element with a comma and space");
             string recToRead = Console.ReadLine();
             string[] recInput = recToRead.Split(", ");
             //Turn string to guid
-            Guid inputGuid = Guid.Parse(recInput[2]);
-            db.ReadOneRecord<ArtistModel>(recInput[1], inputGuid);
+            Guid inputGuid = Guid.Parse(recInput[1]);
+            db.ReadOneRecord<ArtistModel>(recInput[0], inputGuid);
         }
         public void Operating(){
             switch(Console.ReadLine()){
@@ -73,15 +73,22 @@ namespace ArtistDatabase
 
         }
         public void Help(){
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
+            Console.WriteLine("Write ReadAll, to read all records");
+            Console.WriteLine("Write ReadOne, to read one record");
+            Console.WriteLine("");
+            Console.WriteLine("");
         }
+        /*
+        public static Type GetType(string typeName){
+            var type = Type.GetType(typeName);
+            if(type != null) return type;
+            return null;
+        }
+        //this converts a string to a type specified, not exactly what i wanted
         public static T GetTFromString<T>(string typeString){
             var typeReturned = TypeDescriptor.GetConverter(typeof(T));
             return (T)(typeReturned.ConvertFromInvariantString(typeString));
-        }
+        }*/
     }
     public class MongoCRUD
         {
