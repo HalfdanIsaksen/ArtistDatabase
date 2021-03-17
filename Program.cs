@@ -12,6 +12,7 @@ namespace ArtistDatabase
     //MongoCRUD db = new MongoCRUD("ArtistAddressBook");
         static void Main(string[] args)
         {
+            Console.WriteLine("Write Help to get a list of commands");
             terminalControl tc = new terminalControl();
             bool showOperations = true;
             while(showOperations){
@@ -102,7 +103,8 @@ namespace ArtistDatabase
             return (T)(typeReturned.ConvertFromInvariantString(typeString));
         }*/
     }
-    public class terminalControl{
+}
+/*    public class terminalControl{
         MongoCRUD db = new MongoCRUD("ArtistAddressBook");
         public void Create(){
             Console.WriteLine("Write firstname, lastname, birthdate, addresse,");
@@ -138,7 +140,7 @@ namespace ArtistDatabase
                 }
                 Console.WriteLine();
             }
-            Console.ReadLine();
+            //Console.ReadLine();
         }
         public void ReadOneRec(){
             Console.WriteLine("First write which table you want, then id of the artist you want");
@@ -149,11 +151,16 @@ namespace ArtistDatabase
             Guid inputGuid = Guid.Parse(recInput[1]);
             db.ReadOneRecord<ArtistModel>(recInput[0], inputGuid);
         }
+        public void Delete(){
+            Console.WriteLine("Write from which table you want to delete and the id of the record");
+            Console.WriteLine("seperate each element with a comma and space");
+            string recToDelete = Console.ReadLine();
+            string[] recInput = recToDelete.Split(", ");
+            Guid inputGuid = Guid.Parse(recInput[1]);
+            db.DeleteRecord<ArtistModel>(recInput[0], inputGuid);
+        }
         public bool Operating(){
             switch(Console.ReadLine()){
-                case "Start":
-                    Start();
-                    return true;
                 case "Help":
                     Help();
                     return true;
@@ -166,6 +173,9 @@ namespace ArtistDatabase
                 case "Create":
                     Create();
                     return true;
+                case "Delete":
+                    Delete();
+                    return true;
                 case "Exit":
                     return false;
                 default:
@@ -174,60 +184,19 @@ namespace ArtistDatabase
             }
         }
 
-        public void Start(){
-
-        }
         public void Help(){
             Console.WriteLine("Write ReadAll, to read all records");
             Console.WriteLine("Write ReadOne, to read one record");
             Console.WriteLine("Write Create, to create a new record");
-            Console.WriteLine("");
-            Console.ReadLine();
+            Console.WriteLine("Write delete, to delete a record");
+            //Console.ReadLine();
         }
     }
-    public class MongoCRUD
-        {
-        private IMongoDatabase db;
-        public MongoCRUD(string database){
-            //create client for connecting to database
-            var client = new MongoClient();
-            db = client.GetDatabase(database);
-        }
-        //inserting a record in the table in the databse
-        public void InsertRecord<T>(string table, T record){
-            var collection = db.GetCollection<T>(table);
-            collection.InsertOne(record);
-        }
-        public List<T> ReadRecords<T>(string table){
-            var collection = db.GetCollection<T>(table);
-            return collection.Find(new BsonDocument()).ToList();
-        }
-        //find on record in the table by searching for its id
-        public T ReadOneRecord<T>(string table, Guid id){
-            var collection = db.GetCollection<T>(table);
-            var filter = Builders<T>.Filter.Eq("Id", id);
+}*/
 
-            return collection.Find(filter).First();
-        }
-
-        public void UpsertRecord<T>(string table, Guid id, T record){
-            var collection = db.GetCollection<T>(table);
-
-            var result = collection.ReplaceOne(
-                new BsonDocument("_id", id),
-                record,
-                new UpdateOptions{ IsUpsert = true});
-        }
-
-        public void DeleteRecord<T>(string table, Guid id){
-            var collection = db.GetCollection<T>(table);
-            var filter = Builders<T>.Filter.Eq("id", id);
-            collection.DeleteOne(filter);
-        }
-    }
 
     //creating a class for the basic information the databse needs to hold about an artist
-    public class ArtistModel{
+/*    public class ArtistModel{
         [BsonId]
         public Guid Id{get; set;}
         public string Firstname{get; set;}
@@ -236,9 +205,9 @@ namespace ArtistDatabase
         public string Addresses{get; set;}
         //if im corret i can initalize the class by calling Artistmodel.resume = new filereader() later
         public FileReader Resume{get; set;}
-    }
+    }*/
 
-    public class FileReader{
+/*    public class FileReader{
         //FileReader lets you upload a .txt file and then converts it to a string array
         //Husk at det sted .txt filen skal findes kan gøres som et console.readline med placeringen af tekstfilen på computeren
         public string[] text{get; set;}
@@ -249,4 +218,4 @@ namespace ArtistDatabase
             }
         }
     }
-}
+}*/
