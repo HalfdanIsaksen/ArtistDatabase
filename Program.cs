@@ -9,11 +9,16 @@ namespace ArtistDatabase
 {
     class Program
     {
-    MongoCRUD db = new MongoCRUD("ArtistAddressBook");
+    //MongoCRUD db = new MongoCRUD("ArtistAddressBook");
         static void Main(string[] args)
         {
-            Console.WriteLine("hello world!");
+            terminalControl tc = new terminalControl();
+            bool showOperations = true;
+            while(showOperations){
+                showOperations = tc.Operating();
+            }
         }
+        /*
         public void Create(){
             //Creates a new Artist called halfdan via the class Artismodel
             ArtistModel halfdan = new ArtistModel{
@@ -52,20 +57,26 @@ namespace ArtistDatabase
             Guid inputGuid = Guid.Parse(recInput[1]);
             db.ReadOneRecord<ArtistModel>(recInput[0], inputGuid);
         }
-        public void Operating(){
+        public bool Operating(){
             switch(Console.ReadLine()){
                 case "Start":
                     Start();
-                    break;
+                    return true;
                 case "Help":
                     Help();
-                    break;
+                    return true;
                 case "ReadAll":
                     Read();
-                    break;
+                    return true;
                 case "ReadOne":
                     ReadOneRec();
-                    break;
+                    return true;
+                case "Create":
+                    Create();
+                    return true;
+                default:
+                    Console.WriteLine("Not a valid command try again.");
+                    return true;
             }
         }
 
@@ -75,10 +86,11 @@ namespace ArtistDatabase
         public void Help(){
             Console.WriteLine("Write ReadAll, to read all records");
             Console.WriteLine("Write ReadOne, to read one record");
+            Console.WriteLine("Write Create, to create a new record");
             Console.WriteLine("");
-            Console.WriteLine("");
+            Console.ReadLine();
         }
-        /*
+        
         public static Type GetType(string typeName){
             var type = Type.GetType(typeName);
             if(type != null) return type;
@@ -89,6 +101,89 @@ namespace ArtistDatabase
             var typeReturned = TypeDescriptor.GetConverter(typeof(T));
             return (T)(typeReturned.ConvertFromInvariantString(typeString));
         }*/
+    }
+    public class terminalControl{
+        MongoCRUD db = new MongoCRUD("ArtistAddressBook");
+        public void Create(){
+            Console.WriteLine("Write firstname, lastname, birthdate, addresse,");
+            Console.WriteLine("and location on driver of resume or null of");
+            Console.WriteLine("artist you want to create.");
+            Console.WriteLine("seperate each element with a comma and space");
+            string recToCreate = Console.ReadLine();
+            string[] recInput = recToCreate.Split(", ");
+            //Creates a new Artist called halfdan via the class Artismodel
+            ArtistModel artist = new ArtistModel{
+                Firstname = recInput[0],
+                Lastname = recInput[1],
+                Birthdate = recInput[2],
+                Addresses = recInput[3],
+                Resume = new FileReader{
+                    //find the path where you saved the .txt and insert it
+                    // location fdor my resume D:\HalfdanTheVillain\ArtistDatabase\HalfdanResume.txt
+                    text = System.IO.File.ReadAllLines($@"{recInput[4]}")
+                }
+            };
+
+            db.InsertRecord("Artist", artist);
+        }
+        public void Read(){
+            //collect all records from the artist table
+            var recs = db.ReadRecords<ArtistModel>("Artist");
+            //foreach record in recs print the name and birthday and address if it is registeret
+            foreach (var rec in recs){
+                Console.WriteLine($"{rec.Id}: {rec.Firstname}: {rec.Lastname}: {rec.Birthdate}:");
+                //if the artist has a address registeret print it
+                if(rec.Addresses != null){
+                    Console.WriteLine(rec.Addresses);
+                }
+                Console.WriteLine();
+            }
+            Console.ReadLine();
+        }
+        public void ReadOneRec(){
+            Console.WriteLine("First write which table you want, then id of the artist you want");
+            Console.WriteLine("seperate each element with a comma and space");
+            string recToRead = Console.ReadLine();
+            string[] recInput = recToRead.Split(", ");
+            //Turn string to guid
+            Guid inputGuid = Guid.Parse(recInput[1]);
+            db.ReadOneRecord<ArtistModel>(recInput[0], inputGuid);
+        }
+        public bool Operating(){
+            switch(Console.ReadLine()){
+                case "Start":
+                    Start();
+                    return true;
+                case "Help":
+                    Help();
+                    return true;
+                case "ReadAll":
+                    Read();
+                    return true;
+                case "ReadOne":
+                    ReadOneRec();
+                    return true;
+                case "Create":
+                    Create();
+                    return true;
+                case "Exit":
+                    return false;
+                default:
+                    Console.WriteLine("Not a valid command try again.");
+                    return true;
+            }
+        }
+
+        public void Start(){
+
+        }
+        public void Help(){
+            Console.WriteLine("Write ReadAll, to read all records");
+            Console.WriteLine("Write ReadOne, to read one record");
+            Console.WriteLine("Write Create, to create a new record");
+            Console.WriteLine("");
+            Console.ReadLine();
+        }
     }
     public class MongoCRUD
         {
