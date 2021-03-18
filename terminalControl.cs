@@ -96,6 +96,7 @@ namespace ArtistDatabase
             Console.WriteLine("Write ReadOne, to read one record");
             Console.WriteLine("Write Create, to create a new record");
             Console.WriteLine("Write Delete, to delete a record");
+            Console.WriteLine("Write Clear, to clear console");
             Console.WriteLine("Write Exit, to exit");
             //Console.ReadLine();
         }
